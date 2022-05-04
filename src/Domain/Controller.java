@@ -49,19 +49,14 @@ public class Controller {
      * עניינים פתוחים:
      * אין
      */
-    public static void signReferee(){
-        if (currentLogged instanceof AssociationRepresentative){
-            db.isExisting("Game",GameID);
-        }
-        else
-        {
-            return;
-        }
+
+
+    public boolean login(String username,String password) {
     }
 
-    public void login(String username,String password) {
+    public boolean assignGame(String gameId, String team1, String team2, List<String> referees, String mainReferee) {
     }
 
-    public void assignGame(int gameId, String team1, String team2, List<String> referees, String mainReferee) {
+    public boolean assignReferee(String gameId, String refereeId) {
     }
 }
