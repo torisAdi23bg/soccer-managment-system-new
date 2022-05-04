@@ -1,5 +1,6 @@
 package Domain;
 
+import java.sql.Time;
 import java.util.Date;
 
 public class Event {

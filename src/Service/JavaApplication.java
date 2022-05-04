@@ -8,15 +8,15 @@ import java.util.*;
 public class JavaApplication {
     Controller uc = Controller.getInstance();
 
-    public void signReferee() {
+    public void assignReferee(int gameId,String refereeId) {
         uc.signReferee();
     }
 
-    public void signGame(){
-        uc.signGame();
+    public void assignGame(int gameId,String team1,String team2,List<String> referees,String mainReferee){
+        uc.assignGame(gameId,team1,team2,referees,mainReferee);
     }
 
-    public void login(){
-        uc.login();
+    public boolean login(String username,String password){
+        uc.login(username,password);
     }
 }

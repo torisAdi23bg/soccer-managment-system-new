@@ -2,6 +2,8 @@ package Domain;
 
 import DataAccess.Dao;
 
+import java.util.List;
+
 public class Controller {
 
     private static Controller single = null;
@@ -49,11 +51,17 @@ public class Controller {
      */
     public static void signReferee(){
         if (currentLogged instanceof AssociationRepresentative){
-            db.isExisting("Game",GameID)
+            db.isExisting("Game",GameID);
         }
         else
         {
             return;
         }
+    }
+
+    public void login(String username,String password) {
+    }
+
+    public void assignGame(int gameId, String team1, String team2, List<String> referees, String mainReferee) {
     }
 }
