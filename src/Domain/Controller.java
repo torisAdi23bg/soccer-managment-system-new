@@ -52,11 +52,14 @@ public class Controller {
 
 
     public boolean login(String username,String password) {
+        return false;
     }
 
     public boolean assignGame(String gameId, String team1, String team2, List<String> referees, String mainReferee) {
+        return false;
     }
 
     public boolean assignReferee(String gameId, String refereeId) {
+        return false;
     }
 }
