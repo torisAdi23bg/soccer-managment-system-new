@@ -10,50 +10,29 @@ public class Controller {
     private static Dao db;
     private static Subscriber currentLogged;
 
-    private Controller()
-    {
-        db= Dao.getInstance();
+    private Controller() {
+        db = Dao.getInstance();
+        currentLogged = null;
     }
-    public static Controller getInstance()
-    {
+
+    public static Controller getInstance() {
         if (single == null)
             single = new Controller();
 
         return single;
     }
 
-    /**
-     * שחקן ראשי:נציג התאחדות
-     * שחקנים משנים:
-     * שופטים
-     * preconditions:
-     * נציג התאחדות מחובר למערכת
-     * קיימת ליגה ועונה במערכת שלה לא משובצים עדיין שופטים
-     * המשחק שלו נציג ההתאחדות רוצה להוסיף שופטים קיים
-     *
-     * תרחיש הצלחה ראשי:
-     * נציג ההתאחדות נכנס לעריכת משחק
-     * נציג ההתאחדות מוסיף השופטים שהוא רוצה לשבץ
-     * נשלחת בקשה לשרת לשיבוץ
-     * המערכת תודיע על הוספה מוצלחת
-     * המערכת תתעד את ההוספה בLOGS
-     *
-     * תרחישים אלטרנטיבים:
-     * התרחשה שגיאה בDB-המערכת תתריע לנציג
-     * דרישות מיוחדות:
-     * 1.חיבור לאינטרנט
-     * טכנולוגיות:
-     * 1.תקשורת עם פרוטוקול http
-     * 2.חיבור לdb mongodb
-     * תדירות:תמידית
-     * עניינים פתוחים:
-     * אין
-     */
 
-
-    public boolean login(String username,String password) {
-        return false;
+    public boolean login(String username, String password) {
+//        Subscriber subscriber = new Subscriber(username, password);
+        Subscriber subscriber = db.getSubscriber(username, password);
+        if (subscriber != null) {
+            currentLogged = subscriber;
+            return true;
+        } else
+            return false;
     }
+
 
     public boolean assignGame(String gameId, String team1, String team2, List<String> referees, String mainReferee) {
         return false;
@@ -62,4 +41,9 @@ public class Controller {
     public boolean assignReferee(String gameId, String refereeId) {
         return false;
     }
+
+    public boolean assignGames(String leagueID, String seasonID, List<String> mainRefereesIDS, List<String> refereesIDS) {
+    return false;
+    }
+
 }

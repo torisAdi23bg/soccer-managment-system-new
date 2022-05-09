@@ -12,8 +12,10 @@ public class JavaApplication {
         return uc.assignReferee(gameId,refereeId);
     }
 
-    public boolean assignGame(String gameId,String team1,String team2,List<String> referees,String mainReferee){
-        return uc.assignGame(gameId,team1,team2,referees,mainReferee);
+    public boolean assignGames(String leagueID, String seasonID, List<String> mainRefereesIDS, List<String> refereesIDS){
+//    public boolean assignGame(String gameId,String team1,String team2,List<String> referees,String mainReferee){
+        return uc.assignGames(leagueID, seasonID, mainRefereesIDS, refereesIDS);
+//        return uc.assignGames(gameId,team1,team2,referees,mainReferee);
     }
 
     public boolean login(String username,String password){
