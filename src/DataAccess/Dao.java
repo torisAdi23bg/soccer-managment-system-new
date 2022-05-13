@@ -2,6 +2,9 @@ package DataAccess;
 
 import Domain.Controller;
 import Domain.Subscriber;
+import Domain.Team;
+
+import java.util.LinkedList;
 
 public class Dao {
     private static Dao single = null;
@@ -18,11 +21,12 @@ public class Dao {
     }
 
     // return null if no such subscriber
-    public Subscriber getSubscriber(String username, String password) {
+    public Subscriber getSubscriber(String username) {
         return null;
     }
 
-    public String getClassName(Subscriber subscriber) {
-        return "";
+    //return null if no such leagueID,seasonID teams
+    public LinkedList<Team> getAllGroups(String leagueID, String seasonID) {
+        return null;
     }
 }

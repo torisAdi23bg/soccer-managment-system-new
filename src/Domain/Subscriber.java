@@ -14,5 +14,12 @@ public abstract class Subscriber {
         mailOrAlert=false;
     }
 
+    public boolean login(String password){
+        if (this.password.equals(password)){
+            return true;
+        }
+        return false;
+    }
+
 
 }
