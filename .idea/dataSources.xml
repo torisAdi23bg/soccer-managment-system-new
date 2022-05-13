@@ -7,5 +7,12 @@
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
       <jdbc-url>jdbc:sqlite:C:\Users\user\Desktop\סמסטר ב שנה ב\soccer-managment-system-new\src\DataAccess\DB\LeagueManagmentDB.db</jdbc-url>
     </data-source>
+    <data-source source="LOCAL" name="LeagueManagmentDB [2]" uuid="5bbee30d-7855-4366-bb0c-3bc2526cdfe6">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:C:\Users\adito\Desktop\myP\soccer-managment-system\src\DataAccess\DB\LeagueManagmentDB.db</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>

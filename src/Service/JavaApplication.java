@@ -8,8 +8,8 @@ import java.util.*;
 public class JavaApplication {
     Controller uc = Controller.getInstance();
 
-    public boolean assignReferee(String gameId,String refereeId) {
-        return uc.assignReferee(gameId,refereeId);
+    public String assignReferee(String leagueID,String seasonID, String refereeUsername) {
+        return uc.assignReferee(leagueID,seasonID,refereeUsername);
     }
 
     public String assignGames(String leagueID, String seasonID, boolean policy){

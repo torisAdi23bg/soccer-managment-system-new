@@ -2,6 +2,7 @@ package Domain;
 import com.google.gson.Gson; //todo: delete when finishing
 
 import DataAccess.Dao;
+import javafx.util.Pair;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -36,15 +37,15 @@ public class Controller {
     }
 
     public String assignGames(String leagueID, String seasonID, boolean policy){
+        League league = db.getLeague(leagueID);
+        Season season = db.getSeason(seasonID);
+        if (league==null || season==null)
+        {
+            return "Enter valid details";
+        }
+
         LinkedList<Team> allGroupsInSeasonLeague = db.getAllGroups(leagueID,seasonID);
         LinkedList<Game> newGamesToSave = new LinkedList<>();
-//        Gson gson = new Gson();
-//
-//        String jsonInString = gson.toJson(systemObjects);
-//        System.out.println(jsonInString);
-//        JSONObject jsonObject = new JSONObject();
-//        jsonObject.toString();
-
 
         if (policy==true){ //every couple have one game. so every team plays at most one game .the field will be for the team lexicographically first. If odd number - one team not playing.
             if (allGroupsInSeasonLeague.size()%2==0)//even
@@ -96,30 +97,41 @@ public class Controller {
                 }
             }
         }
+
         if (db.saveGames(newGamesToSave)==true)//success;
-            return true;
+        {
+            Gson gson = new Gson();
+            String jsonInString = gson.toJson(newGamesToSave);
+            return jsonInString;
+        }
         return "";
     }
-    receive league, season, policy (2 policies needed)
-    leagure,season,allGroupsRelated
-    needto: assignGame by policy.
-        check: check the list received
-            return string with jsons
 
+    public String assignReferee(String leagueID,String seasonID, String refereeUsername) {
 
-    receive referee, season, getLeague
+        if (currentLogged == null) {
+            return "No logged-in association representative";
+        }
 
+        if (!(currentLogged.class_name.equals("AssociationRepresentative"))) {
+            return "No logged-in association representative";
+        }
 
-    public boolean assignGame(String gameId, String team1, String team2, List<String> referees, String mainReferee) {
-        return false;
+        Referee referee = db.getReferee(refereeUsername);
+        League league = db.getLeague(leagueID);
+        Season season = db.getSeason(seasonID);
+        if (referee == null || league == null || season == null) {
+            return "Enter valid details";
+        }
+
+        LinkedList<Pair<Season,League>> assignments = db.getRefereeAssignments(referee);
+        referee.assignments=assignments;
+        if (referee.isAssignmentExists(season,league)){
+            return "Assignment already exists";
+        }
+        String msg = db.addRefereeToLEAGUESEASONTable(referee,league,season);
+        return msg;
     }
 
-    public boolean assignReferee(String gameId, String refereeId) {
-        return false;
-    }
-
-    public boolean assignGames(String leagueID, String seasonID, List<String> mainRefereesIDS, List<String> refereesIDS) {
-    return false;
-    }
 
 }

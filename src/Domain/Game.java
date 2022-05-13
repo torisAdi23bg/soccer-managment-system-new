@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Game {
-    public Date date;
+    public String date;
     public String field;
     public String score;
     public List<Event> eventsLog;
@@ -13,7 +13,7 @@ public class Game {
     public Team visiting;
 
     public Game(String field, Team hosting, Team visiting) {
-        this.date = new Date();
+        this.date = "2022 SUMMER";
         this.field = field;
         this.hosting = hosting;
         this.visiting = visiting;
