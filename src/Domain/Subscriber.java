@@ -1,6 +1,6 @@
 package Domain;
 
-public abstract class Subscriber {
+public class Subscriber {
 
     public String username;
     public String password;
