@@ -20,4 +20,16 @@ public class Game {
         this.score="0:0";
         this.eventsLog=new LinkedList<>();
     }
+    @Override
+    public boolean equals(Object other){
+        if (other == this) {
+            return true;
+        }
+        if (!(other instanceof Game)) {
+            return false;
+        }
+        Game otherGame=(Game) other;
+        return this.date==otherGame.date && this.field==otherGame.field && hosting.equals(otherGame.hosting)
+                && visiting.equals(otherGame.visiting);
+    }
 }

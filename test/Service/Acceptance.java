@@ -1,15 +1,20 @@
 package Service;
 
+import DataAccess.Dao;
+import Domain.*;
+import com.google.gson.Gson;
+import javafx.util.Pair;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import static org.junit.Assert.*;
 
 public class Acceptance {
-
+    private static Dao db=Dao.getInstance();;
     JavaApplication app=new JavaApplication();
     @BeforeEach
     public void initLogin() {
@@ -19,51 +24,89 @@ public class Acceptance {
     @Test
     public void loginTest() {
         //ar: association reepresentive
-        assertFalse(app.login("","1234"));
-        assertFalse(app.login("stubAR",""));
-        assertFalse(app.login("",""));
-        assertFalse(app.login("not exist",""));
-        assertFalse(app.login("stubAR","incorrect password"));
+        assertEquals("false",app.login("","1234"));
+        assertEquals("false",app.login("stubAR",""));
+        assertEquals("false",app.login("",""));
+        assertEquals("false",app.login("not exist",""));
+        assertEquals("false",app.login("stubAR","incorrect password"));
 
-        assertTrue(app.login("stubAR","1234"));
+        assertEquals("true",app.login("stubAR","1234"));
     }
     @Test
-    public void assignGameTest(){
-//        assignGame(String gameId,String team1,String team2,List<String> referees,String mainReferee)
-        List<String> refList=new ArrayList<String>();
-        refList.add("ref1");
-        refList.add("ref2");
+    public void assignGamesTest() {
+//        assignGames(String leagueID, String seasonID, boolean policy)
 
-//        assertFalse(app.assignGame("","team1","team2",refList,"ref3"));
-//        assertFalse(app.assignGame("game1","","team2",refList,"ref3"));
-//        assertFalse(app.assignGame("game1","team1","",refList,"ref3"));
-//        assertFalse(app.assignGame("game1","team1","team2",new ArrayList<>(),"ref3"));
-//        assertFalse(app.assignGame("game1","team1","",refList,""));
-//
-//        assertFalse(app.assignGame("not exist","team1","team2",refList,"ref3"));
-//        assertFalse(app.assignGame("game1","not exist","team2",refList,"ref3"));
-//        assertFalse(app.assignGame("game1","team1","not exist",refList,"ref3"));
-//        assertFalse(app.assignGame("game1","team1","not exist",null,"ref3"));
-//        assertFalse(app.assignGame("game1","team1","team2",refList,"not exist"));
-//
-//        refList.add("ref not exist");
-//        assertFalse(app.assignGame("game1","team1","team2",refList,"ref3"));
-//        refList.remove("ref not exist");
+        String leagueID = "league1";
+        String seasonID = "season1";
+        LinkedList<Team> allGroupsInSeasonLeague = db.getAllGroups(leagueID, seasonID);
 
+        //invalid inputs
+        assertEquals("Enter valid details", app.assignGames(leagueID, null, true));
+        assertEquals("Enter valid details", app.assignGames(null, seasonID, true));
+        //todo : assert ids that are not in the DB
 
-//        assertTrue(app.assignGame("game1","team1","team2",refList,"ref3"));
+        Gson gson = new Gson();
+        // policy 1
+        String stringRes1 = app.assignGames(leagueID, seasonID, true);
+        LinkedList<Game> resSavedGames1 = gson.fromJson(stringRes1, LinkedList.class);
+
+        for (int i = 0; i < allGroupsInSeasonLeague.size(); i += 2) {
+            Team team1 = allGroupsInSeasonLeague.get(i);
+            Team team2 = allGroupsInSeasonLeague.get(i + 1);
+            Game newGame;
+            if (team1.id.compareTo(team2.id) < 0) //team1 is before team2 lexicographically
+            {
+                newGame = new Game(team1.homeField, team1, team2);
+            } else {
+                newGame = new Game(team2.homeField, team2, team1);
+            }
+            assert (resSavedGames1.contains(newGame));
+
+        }
+        //todo : delete saved games from DB before next section?
+
+        // policy 2
+        String stringRes2 = app.assignGames(leagueID, seasonID, false);
+        LinkedList<Game> resSavedGames2 = gson.fromJson(stringRes2, LinkedList.class);
+        for (int i = 0; i < allGroupsInSeasonLeague.size() - 1; i += 2) {
+            Team team1 = allGroupsInSeasonLeague.get(i);
+            Team team2 = allGroupsInSeasonLeague.get(i + 1);
+            Game newGame;
+            if (team1.id.compareTo(team2.id) < 0) //team1 is before team2 lexicographically
+            {
+                newGame = new Game(team1.homeField, team1, team2);
+            } else {
+                newGame = new Game(team2.homeField, team2, team1);
+            }
+            assert (resSavedGames2.contains(newGame));
+
+        }
     }
     @Test
     public void assignRefereeTest(){
-//        assignReferee(String gameId,String refereeId)
+//        assignReferee(String leagueID,String seasonID, String refereeUsername)
+        String legueId="stubAR";
+        String seasonID = "season1";
+        String refereeUsername="ref1";
 
-        assertFalse(app.assignReferee("","ref1"));
-        assertFalse(app.assignReferee("game1",""));
+        //todo : no user is currently logged in use case
+        //todo : a user that is not AR is currently logged in use case
 
-        assertFalse(app.assignReferee("not exist","ref1"));
-        assertFalse(app.assignReferee("game1","not exist"));
+        app.login("stubAR","1234");
 
-        assertTrue(app.assignReferee("game1","ref1"));
+
+        //invalid input
+        assertEquals("Enter valid details",app.assignReferee("not exist",seasonID,refereeUsername));
+        assertEquals("Enter valid details",app.assignReferee(legueId,"not exist",refereeUsername));
+        assertEquals("Enter valid details",app.assignReferee(legueId,seasonID,"not exist"));
+        //todo : unassign referee
+
+        //ref1 already has assignment + assert success
+        assertEquals("true",app.assignReferee(legueId,seasonID,refereeUsername)); //assign so thr ref would have an assignment
+        assertEquals("Assignment already exists",app.assignReferee(legueId,seasonID,refereeUsername));
+
+
+
     }
 
 }

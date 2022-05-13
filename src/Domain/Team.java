@@ -13,4 +13,24 @@ public class Team {
         this.activated = activated;
         this.closedForEver = closedForEver;
     }
+
+    @Override
+    public boolean equals(Object o) {
+
+        // If the object is compared with itself then return true
+        if (o == this) {
+            return true;
+        }
+
+
+        if (!(o instanceof Team)) {
+            return false;
+        }
+
+        Team otherTeam = (Team) o;
+
+        // Compare the data members and return accordingly
+        return id==otherTeam.id;
+    }
+
 }
