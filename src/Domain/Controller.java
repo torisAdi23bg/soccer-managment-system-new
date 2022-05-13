@@ -1,5 +1,5 @@
 package Domain;
-import com.google.gson.Gson; //todo: delete when finishing
+//import com.google.gson.Gson; //todo: delete when finishing
 
 import DataAccess.Dao;
 
@@ -100,14 +100,14 @@ public class Controller {
             return true;
         return "";
     }
-    receive league, season, policy (2 policies needed)
-    leagure,season,allGroupsRelated
-    needto: assignGame by policy.
-        check: check the list received
-            return string with jsons
-
-
-    receive referee, season, getLeague
+//    receive league, season, policy (2 policies needed)
+//    leagure,season,allGroupsRelated
+//    needto: assignGame by policy.
+//        check: check the list received
+//            return string with jsons
+//
+//
+//    receive referee, season, getLeague
 
 
     public boolean assignGame(String gameId, String team1, String team2, List<String> referees, String mainReferee) {
