@@ -7,7 +7,7 @@ public class Team {
     public boolean activated;
     public boolean closedForEver;
 
-    public Team(String id, String homeField, boolean activated, boolean closedForEver) {
+    public Team(String id, String homeField,boolean activated,boolean closedForEvers) {
         this.id = id;
         this.homeField = homeField;
         this.activated = activated;

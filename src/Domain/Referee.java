@@ -17,6 +17,7 @@ public class Referee {
     }
 
     public boolean isAssignmentExists(Season season, League league) {
+        if(assignments==null)return false;
         for (Pair<Season,League> assignment: assignments)
         {
             if (season.id.equals(assignment.getKey().id) && league.id.equals(assignment.getValue().id))

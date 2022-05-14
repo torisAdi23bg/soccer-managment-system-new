@@ -1,7 +1,8 @@
 package DataAccess;
 
 import Domain.*;
-import com.sun.tools.javac.util.Pair;
+import javafx.util.Pair;
+
 
 import java.io.Serializable;
 import java.sql.Connection;
@@ -42,6 +43,7 @@ public class Dao {
             if(rs.getString("USERNAME").equals(username)){
                 res=rs.getString("PASSWORD");
                 break;}
+            connection.close();
         }
     if (res.equals(""))
         return null;
@@ -73,6 +75,7 @@ public class Dao {
             if (res.equals(""))
                 return null;
             referee = new Referee(username, res);
+            connection.close();
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -100,6 +103,7 @@ public class Dao {
             if (res.equals(""))
                 return null;
             league = new League(res);
+            connection.close();
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -127,7 +131,7 @@ public class Dao {
             if (res.equals(""))
                 return null;
             season = new Season(res);
-
+            connection.close();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -154,7 +158,7 @@ public class Dao {
             }
             if (teams.size()==0)
                 return null;
-
+            connection.close();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -182,7 +186,7 @@ public class Dao {
                return null;
            team = new Team(rs.getString("ID"),rs.getString("HOMEFIELD")
            ,rs.getString("ACTIVATED").equals("TRUE"),rs.getString("CLOSEDFOREVER").equals("TRUE"));
-
+           connection.close();
        } catch (SQLException throwables) {
            throwables.printStackTrace();
        }
@@ -210,6 +214,7 @@ public class Dao {
                 ps.setString(6,g.field);
                 ps.executeQuery();
             }
+            connection.close();
         }catch (Exception e){
             return false;
         }
@@ -221,19 +226,23 @@ public class Dao {
     //no need to check if existing in db. They are existing for sure.
     public String addRefereeToLEAGUESEASONTable(Referee referee, League league, Season season) {
         try {
+
             Connection connection = DBConnection.getConnection();
+
             PreparedStatement ps = null;
-            String sql="INSERT INTO LeagueSeasonReferee (League , Season , Referee ) VALUES(?,?,?)";
+            String sql="INSERT INTO LeagueSeasonReferee(League, Season, Referee) VALUES(?,?,?)";
 
                 ps=connection.prepareStatement(sql);
                 ps.setString(1,referee.username);
                 ps.setString(2,league.id);
                 ps.setString(3,season.id);
-                ps.executeQuery();
+                ps.executeUpdate();
+            connection.close();
 
         }catch (Exception e){
             return "false";
         }
+
         return "true";
     }
 
@@ -256,7 +265,7 @@ public class Dao {
             }
             if (pairs.size()==0)
                 return null;
-
+            connection.close();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }

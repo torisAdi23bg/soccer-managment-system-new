@@ -11,7 +11,7 @@ public class AssociationRepresentive extends Subscriber {
 
     public LinkedList<Game> assignGames(League league, Season season, boolean policy){
         Dao db= Dao.getInstance();
-        LinkedList<Team> allGroupsInSeasonLeague = db.getAllGroups(league.id,season.id);
+        LinkedList<Team> allGroupsInSeasonLeague = db.getAllTeams(league.id,season.id);
         LinkedList<Game> newGamesToSave;
 
         if (policy==true){
@@ -72,7 +72,7 @@ public class AssociationRepresentive extends Subscriber {
         {
             for (Team teamOther: allGroupsInSeasonLeague)
             {
-                if (team != teamOther)
+                if (!team.equals(teamOther))
                 {
                     Game newGame = new Game(team.homeField,team,teamOther);
                     newGamesToSave.add(newGame);
