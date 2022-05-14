@@ -1,12 +1,13 @@
-package Service;
-
 import DataAccess.Dao;
 import Domain.*;
+import Service.JavaApplication;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import javafx.util.Pair;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,11 +17,11 @@ import static org.junit.Assert.*;
 public class Acceptance {
     private static Dao db=Dao.getInstance();;
     JavaApplication app=new JavaApplication();
-    @BeforeEach
-    public void initLogin() {
-        //ar: association reepresentive
-        app.login("stubAR","1234");
-    }
+//    @BeforeEach
+//    public void initLogin() {
+//        //ar: association reepresentive
+//        app.login("stubAR","1234");
+//    }
     @Test
     public void loginTest() {
         //ar: association reepresentive
@@ -48,7 +49,9 @@ public class Acceptance {
         Gson gson = new Gson();
         // policy 1
         String stringRes1 = app.assignGames(leagueID, seasonID, true);
-        LinkedList<Game> resSavedGames1 = gson.fromJson(stringRes1, LinkedList.class);
+        System.out.printf(stringRes1);
+        Type gameListType = new TypeToken<LinkedList<Game>>(){}.getType();
+        LinkedList<Game> resSavedGames1 = gson.fromJson(stringRes1, gameListType);
 
         for (int i = 0; i < allGroupsInSeasonLeague.size(); i += 2) {
             Team team1 = allGroupsInSeasonLeague.get(i);

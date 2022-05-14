@@ -28,6 +28,7 @@ public class Controller {
     public String login(String username, String password) {
 //        Subscriber subscriber = new Subscriber(username, password);
         Subscriber subscriber = db.getSubscriber(username);
+        if(subscriber==null)return "false";
         if (subscriber.login(password) == true) {
             currentLogged = subscriber;
             return "true";

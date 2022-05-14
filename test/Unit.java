@@ -1,6 +1,9 @@
-package Domain;
-
+import Domain.League;
+import Domain.Referee;
+import Domain.Season;
+import Domain.Subscriber;
 import org.junit.Test;
+
 import javafx.util.Pair;
 
 import static org.junit.Assert.*;
@@ -26,12 +29,12 @@ public class Unit {
         Season season2 = new Season("summer");
         League league2 = new League("minors league");
 
-        ref1.assignments.add(Pair<season1,league1>);
+        ref1.assignments.add(new Pair(season1,league1));
 
-        assertEquals(false, ref1.isAssignmentExists(Pair<season2,league2>));
-        assertEquals(false, ref1.isAssignmentExists(Pair<season1,league2>));
-        assertEquals(false, ref1.isAssignmentExists(Pair<season2,league1>));
-        assertEquals(true, ref1.isAssignmentExists(Pair<season1,league1>));
+        assertEquals(false, ref1.isAssignmentExists(season2,league2));
+        assertEquals(false, ref1.isAssignmentExists(season1,league2));
+        assertEquals(false, ref1.isAssignmentExists(season2,league1));
+        assertEquals(true, ref1.isAssignmentExists(season1,league1));
 
     }
 
