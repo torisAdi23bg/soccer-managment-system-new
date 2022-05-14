@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import javafx.util.Pair;
 import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.lang.reflect.Type;
@@ -17,11 +18,11 @@ import static org.junit.Assert.*;
 public class Acceptance {
     private static Dao db=Dao.getInstance();;
     JavaApplication app=new JavaApplication();
-//    @BeforeEach
-//    public void initLogin() {
-//        //ar: association reepresentive
-//        app.login("stubAR","1234");
-//    }
+    @BeforeAll
+    public void initLogin() {
+        //ar: association reepresentive
+        app.login("stubAR","1234");
+    }
     @Test
     public void loginTest() {
         //ar: association reepresentive
@@ -44,12 +45,13 @@ public class Acceptance {
         //invalid inputs
         assertEquals("Enter valid details", app.assignGames(leagueID, null, true));
         assertEquals("Enter valid details", app.assignGames(null, seasonID, true));
-        //todo : assert ids that are not in the DB
+        assertEquals("Enter valid details", app.assignGames("not exist", seasonID, true));
+        assertEquals("Enter valid details", app.assignGames(leagueID, "not exist", true));
 
         Gson gson = new Gson();
         // policy 1
         String stringRes1 = app.assignGames(leagueID, seasonID, true);
-        System.out.printf(stringRes1);
+
         Type gameListType = new TypeToken<LinkedList<Game>>(){}.getType();
         LinkedList<Game> resSavedGames1 = gson.fromJson(stringRes1, gameListType);
 
@@ -66,7 +68,7 @@ public class Acceptance {
             assert (resSavedGames1.contains(newGame));
 
         }
-        //todo : delete saved games from DB before next section?
+
 
         // policy 2
         String stringRes2 = app.assignGames(leagueID, seasonID, false);

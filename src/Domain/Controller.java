@@ -37,6 +37,7 @@ public class Controller {
     }
 
     public String assignGames(String leagueID, String seasonID, boolean policy){
+        //todo : check if current user is AR
         League league = db.getLeague(leagueID);
         Season season = db.getSeason(seasonID);
         if (league==null || season==null)

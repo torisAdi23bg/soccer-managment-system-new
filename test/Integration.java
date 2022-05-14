@@ -6,7 +6,5 @@ import static org.junit.Assert.*;
 
 public class Integration {
 
-    @Test
-    public void login() {
-    }
+
 }
