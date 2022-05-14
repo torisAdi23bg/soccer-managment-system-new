@@ -32,5 +32,9 @@ public class Team {
         // Compare the data members and return accordingly
         return id==otherTeam.id;
     }
+    @Override
+    public String toString(){
+        return id;
+    }
 
 }

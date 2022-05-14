@@ -4,9 +4,11 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 
 public class DBConnection {
+    private static Connection connectionToDB=null;
     public static Connection getConnection(){
-        Connection connectionToDB=null;
+
         try {
+            if(connectionToDB!=null){connectionToDB.close();}
             Class.forName("org.sqlite.JDBC");
             connectionToDB=DriverManager.getConnection("jdbc:sqlite:src/DataAccess/DB/LeagueManagmentDB.db");
         } catch (Exception e) {

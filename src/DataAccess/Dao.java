@@ -14,6 +14,9 @@ import java.util.LinkedList;
 public class Dao {
     private static Dao single = null;
     private DBConnection con;
+    Connection connection=null;
+    ResultSet rs=null;
+    PreparedStatement ps=null;
     private Dao()
     {
         con=new DBConnection();
@@ -32,9 +35,8 @@ public class Dao {
         Subscriber subscriber=null;
 
     try {
-        Connection connection= DBConnection.getConnection();
-        PreparedStatement ps=null;
-        ResultSet rs=null;
+         connection= con.getConnection();
+
         String sql="SELECT * FROM SUBSCRIBER";
         ps=connection.prepareStatement(sql);
         rs= ps.executeQuery();
@@ -43,25 +45,99 @@ public class Dao {
             if(rs.getString("USERNAME").equals(username)){
                 res=rs.getString("PASSWORD");
                 break;}
-            connection.close();
+
         }
+        connection.close();
     if (res.equals(""))
         return null;
      subscriber = new Subscriber(username,res);
+
     }catch (Exception e){
     e.getMessage();
 }
-        return subscriber;
+    finally {
+        if (rs != null) {
+            try {
+                rs.close();
+            } catch (SQLException e) { /* Ignored */}
+        }
+        if (ps != null) {
+            try {
+                ps.close();
+            } catch (SQLException e) { /* Ignored */}
+        }
+        if (connection != null) {
+            try {
+                connection.close();
+            } catch (SQLException e) { /* Ignored */}
+        }
+    }
+        return subscriberToRealInstance(subscriber);
 
     }
+
+    private Subscriber subscriberToRealInstance(Subscriber subscriber) {
+
+
+        try {
+            connection= con.getConnection();
+
+
+            String sql="SELECT * FROM AssociationRepresentive WHERE USERNAME='"+subscriber.username+"'";
+            ps=connection.prepareStatement(sql);
+            rs= ps.executeQuery();
+            String res="";
+            while(rs.next()){
+                if(rs.getString("USERNAME").equals(subscriber.username)){
+                    return new AssociationRepresentive(subscriber.username,subscriber.password);
+                    }
+
+            }
+
+
+            sql="SELECT * FROM Referee WHERE USERNAME='"+subscriber.username+"'";
+            ps=connection.prepareStatement(sql);
+            rs= ps.executeQuery();
+            while(rs.next()){
+                if(rs.getString("USERNAME").equals(subscriber.username)){
+                    return new Referee(subscriber.username,subscriber.password,rs.getString("QUALIFICATION"));
+                }
+
+            }
+
+
+        }catch (Exception e){
+
+            e.getMessage();
+        }
+        finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) { /* Ignored */}
+            }
+            if (ps != null) {
+                try {
+                    ps.close();
+                } catch (SQLException e) { /* Ignored */}
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) { /* Ignored */}
+            }
+
+        }
+        return null;
+
+    }
+
 
     //return null if no such referee
     public Referee getReferee(String username) {
         Referee referee = null;
         try {
-            Connection connection = DBConnection.getConnection();
-            PreparedStatement ps = null;
-            ResultSet rs = null;
+             connection = con.getConnection();
             String sql = "SELECT * FROM REFEREE";
             ps = connection.prepareStatement(sql);
             rs = ps.executeQuery();
@@ -72,13 +148,31 @@ public class Dao {
                     break;
                 }
             }
+
             if (res.equals(""))
                 return null;
-            referee = new Referee(username, res);
-            connection.close();
+            referee = new Referee(username, res,res);
+
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
+        }
+        finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) { /* Ignored */}
+            }
+            if (ps != null) {
+                try {
+                    ps.close();
+                } catch (SQLException e) { /* Ignored */}
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) { /* Ignored */}
+            }
         }
         return referee;
 
@@ -87,9 +181,8 @@ public class Dao {
     public League getLeague(String leagueID) {
         League league=null;
         try {
-            Connection connection = DBConnection.getConnection();
-            PreparedStatement ps = null;
-            ResultSet rs = null;
+             connection = con.getConnection();
+
             String sql = "SELECT * FROM LEAGUE";
             ps = connection.prepareStatement(sql);
             rs = ps.executeQuery();
@@ -100,13 +193,31 @@ public class Dao {
                     break;
                 }
             }
+
             if (res.equals(""))
                 return null;
             league = new League(res);
-            connection.close();
+
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
+        }
+        finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) { /* Ignored */}
+            }
+            if (ps != null) {
+                try {
+                    ps.close();
+                } catch (SQLException e) { /* Ignored */}
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) { /* Ignored */}
+            }
         }
         return league;
     }
@@ -115,9 +226,8 @@ public class Dao {
     public Season getSeason(String seasonID) {
         Season season=null;
         try {
-            Connection connection = DBConnection.getConnection();
-            PreparedStatement ps = null;
-            ResultSet rs = null;
+             connection = con.getConnection();
+
             String sql = "SELECT * FROM SEASON";
             ps = connection.prepareStatement(sql);
             rs = ps.executeQuery();
@@ -128,12 +238,30 @@ public class Dao {
                     break;
                 }
             }
+
             if (res.equals(""))
                 return null;
             season = new Season(res);
-            connection.close();
+
         } catch (SQLException throwables) {
             throwables.printStackTrace();
+        }
+        finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) { /* Ignored */}
+            }
+            if (ps != null) {
+                try {
+                    ps.close();
+                } catch (SQLException e) { /* Ignored */}
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) { /* Ignored */}
+            }
         }
         return season;
     }
@@ -143,10 +271,9 @@ public class Dao {
     public LinkedList<Team> getAllTeams(String leagueID, String seasonID) {
         LinkedList<Team> teams=new LinkedList<>();
         try {
-            Connection connection = DBConnection.getConnection();
-            PreparedStatement ps = null;
-            ResultSet rs = null;
-            String sql = "SELECT * FROM LEAGUESEASONTEAMS";
+             connection = con.getConnection();
+
+            String sql = "SELECT * FROM LeagueSeasonTeams";
             ps = connection.prepareStatement(sql);
             rs = ps.executeQuery();
             String res = "";
@@ -156,11 +283,29 @@ public class Dao {
                     break;
                 }
             }
+
             if (teams.size()==0)
-                return null;
-            connection.close();
+                return new LinkedList<Team>();
+
         } catch (SQLException throwables) {
             throwables.printStackTrace();
+        }
+        finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) { /* Ignored */}
+            }
+            if (ps != null) {
+                try {
+                    ps.close();
+                } catch (SQLException e) { /* Ignored */}
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) { /* Ignored */}
+            }
         }
         return teams;
     }
@@ -169,9 +314,8 @@ public class Dao {
    public Team  getTeam(String teamid){
        Team team=null;
        try {
-           Connection connection = DBConnection.getConnection();
-           PreparedStatement ps = null;
-           ResultSet rs = null;
+            connection = con.getConnection();
+
            String sql = "SELECT * FROM TEAM";
            ps = connection.prepareStatement(sql);
            rs = ps.executeQuery();
@@ -182,13 +326,31 @@ public class Dao {
                    break;
                }
            }
+
            if (res.equals(""))
                return null;
            team = new Team(rs.getString("ID"),rs.getString("HOMEFIELD")
            ,rs.getString("ACTIVATED").equals("TRUE"),rs.getString("CLOSEDFOREVER").equals("TRUE"));
-           connection.close();
+
        } catch (SQLException throwables) {
            throwables.printStackTrace();
+       }
+       finally {
+           if (rs != null) {
+               try {
+                   rs.close();
+               } catch (SQLException e) { /* Ignored */}
+           }
+           if (ps != null) {
+               try {
+                   ps.close();
+               } catch (SQLException e) { /* Ignored */}
+           }
+           if (connection != null) {
+               try {
+                   connection.close();
+               } catch (SQLException e) { /* Ignored */}
+           }
        }
        return team;
 
@@ -200,8 +362,8 @@ public class Dao {
     //return true if succeeded
     public boolean saveGames(LinkedList<Game> newGamesToSave) {
         try {
-            Connection connection = DBConnection.getConnection();
-            PreparedStatement ps = null;
+             connection = con.getConnection();
+
             String sql="INSERT INTO Game (TEAM1 , TEAM2 , MAINREFEREE , SCORE, DATE,FIELD ) VALUES(?,?,?,?,?,?,?)";
             for(int i=0;i< newGamesToSave.size();i++){
                 Game g= newGamesToSave.get(i);
@@ -218,6 +380,23 @@ public class Dao {
         }catch (Exception e){
             return false;
         }
+        finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) { /* Ignored */}
+            }
+            if (ps != null) {
+                try {
+                    ps.close();
+                } catch (SQLException e) { /* Ignored */}
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) { /* Ignored */}
+            }
+        }
         return true;
     }
 
@@ -227,9 +406,9 @@ public class Dao {
     public String addRefereeToLEAGUESEASONTable(Referee referee, League league, Season season) {
         try {
 
-            Connection connection = DBConnection.getConnection();
+             connection = con.getConnection();
 
-            PreparedStatement ps = null;
+
             String sql="INSERT INTO LeagueSeasonReferee(League, Season, Referee) VALUES(?,?,?)";
 
                 ps=connection.prepareStatement(sql);
@@ -237,10 +416,27 @@ public class Dao {
                 ps.setString(2,league.id);
                 ps.setString(3,season.id);
                 ps.executeUpdate();
-            connection.close();
+
 
         }catch (Exception e){
             return "false";
+        }
+        finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) { /* Ignored */}
+            }
+            if (ps != null) {
+                try {
+                    ps.close();
+                } catch (SQLException e) { /* Ignored */}
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) { /* Ignored */}
+            }
         }
 
         return "true";
@@ -252,9 +448,8 @@ public class Dao {
 
         LinkedList<Pair<Season,League>> pairs=new LinkedList<>();
         try {
-            Connection connection = DBConnection.getConnection();
-            PreparedStatement ps = null;
-            ResultSet rs = null;
+             connection = con.getConnection();
+
             String sql = "SELECT * FROM LeagueSeasonReferee";
             ps = connection.prepareStatement(sql);
             rs = ps.executeQuery();
@@ -263,12 +458,63 @@ public class Dao {
                     pairs.add(new Pair<Season,League>(new Season(rs.getString("SEASON")),new League(rs.getString("LEAGUE"))));
                 }
             }
+            connection.close();
             if (pairs.size()==0)
                 return null;
-            connection.close();
+
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
+        finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) { /* Ignored */}
+            }
+            if (ps != null) {
+                try {
+                    ps.close();
+                } catch (SQLException e) { /* Ignored */}
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) { /* Ignored */}
+            }
+        }
         return pairs;
     }
+
+    public void deleteAllRows(String TableName){
+        try {
+             connection = con.getConnection();
+
+            String sql = "DELETE FROM "+TableName;
+            ps=connection.prepareStatement(sql);
+            ps.executeQuery();
+            connection.close();
+        }catch (Exception e){
+            System.out.println("ERRORRRRR");
+        }
+        finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) { /* Ignored */}
+            }
+            if (ps != null) {
+                try {
+                    ps.close();
+                } catch (SQLException e) { /* Ignored */}
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) { /* Ignored */}
+            }
+        }
+        System.out.println("delted values");
+    }
 }
+
+

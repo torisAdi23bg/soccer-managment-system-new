@@ -30,6 +30,7 @@ public class AssociationRepresentive extends Subscriber {
     }
     private LinkedList<Game> applyPolicy1(LinkedList<Team> allGroupsInSeasonLeague ){
         LinkedList<Game> newGamesToSave = new LinkedList<>();
+        if(allGroupsInSeasonLeague.size()==0)return  newGamesToSave;
         if (allGroupsInSeasonLeague.size()%2==0)//even
         {
             for(int i=0; i<allGroupsInSeasonLeague.size(); i+=2)
@@ -68,6 +69,7 @@ public class AssociationRepresentive extends Subscriber {
     }
     private LinkedList<Game> applyPolicy2(LinkedList<Team> allGroupsInSeasonLeague ){
         LinkedList<Game> newGamesToSave = new LinkedList<Game>();
+        if(allGroupsInSeasonLeague.size()==0)return  newGamesToSave;
         for(Team team : allGroupsInSeasonLeague)
         {
             for (Team teamOther: allGroupsInSeasonLeague)

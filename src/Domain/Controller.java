@@ -63,7 +63,7 @@ public class Controller {
 
     public String assignReferee(String leagueID,String seasonID, String refereeUsername) {
 
-        if (currentLogged == null || currentLogged instanceof AssociationRepresentive) {
+        if (currentLogged == null || !(currentLogged instanceof AssociationRepresentive)) {
             return "No logged-in association representative";
         }
 

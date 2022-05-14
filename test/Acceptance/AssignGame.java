@@ -24,17 +24,18 @@ public class AssignGame {
     String res2 = app.assignGames(leagueID, seasonID, false);
     @BeforeEach
     public void beforeEach(){
-        app.login("stubAR", "1234");
+
     }
     @Test
     public void invalidSubscriber() {
-        app.login("1", "1234");
+        app.login("1", "1");
         assertEquals("The user that is currently logged in is not an Association Representive",
                 app.assignGames(leagueID, seasonID, true));
 
     }
     @Test
     public void assertInvalidInputs( ) {
+        app.login("stubAR", "1234");
         assertEquals("Enter valid details", app.assignGames(leagueID, null, true));
         assertEquals("Enter valid details", app.assignGames(null, seasonID, true));
         assertEquals("Enter valid details", app.assignGames("not exist", seasonID, true));
@@ -51,7 +52,7 @@ public class AssignGame {
         LinkedList<Game> expectedRes1 = new LinkedList<>();
         expectedRes1.add(new Game(maccabi.homeField, maccabi, barcelona));
         expectedRes1.add(new Game(barcelona.homeField, barcelona, maccabi));
-        assertEquals(res1, expectedRes1);
+        assertEquals(expectedRes1,res1);
     }
     @Test
     public void assertPolicy1Odd() {
@@ -66,7 +67,7 @@ public class AssignGame {
         expectedRes1.add(new Game(barcelona.homeField, barcelona, maccabi));
         expectedRes1.add(new Game(hapoel.homeField, hapoel, maccabi));
         expectedRes1.add(new Game(maccabi.homeField, maccabi, barcelona));
-        assertEquals(res1, expectedRes1);
+        assertEquals(expectedRes1,res1);
     }
     @Test
     public void assertPolicy2() {

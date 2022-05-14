@@ -32,4 +32,12 @@ public class Game {
         return this.date==otherGame.date && this.field==otherGame.field && hosting.equals(otherGame.hosting)
                 && visiting.equals(otherGame.visiting);
     }
+    @Override
+    public String toString(){
+        return
+                "Hosting:"+hosting+"\n"+
+                        "Visiting:"+visiting+"\n"+
+                        "Field:"+field+"\n"+
+                        "Date:"+date+"\n";
+    }
 }

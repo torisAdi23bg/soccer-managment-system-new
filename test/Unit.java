@@ -21,7 +21,7 @@ public class Unit {
 
     @Test
     public void Referee_isAssignmentExist(){
-        Referee ref1 = new Referee("ref1", "a 10 years experience");
+        Referee ref1 = new Referee("ref1", "a 10 years experience","qual");
 
         Season season1 = new Season("winter");
         League league1 = new League("majors league");
