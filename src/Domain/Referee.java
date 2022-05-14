@@ -5,13 +5,13 @@ import javafx.util.Pair;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Referee extends Subscriber{
+public class Referee {
     public LinkedList<Pair<Season, League>> assignments;
-
+    public String username;
     public String qualification;
 
-    public Referee(String username,String password, String qualification) {
-        super(username,password);
+    public Referee(String username, String qualification) {
+        this.username = username;
         this.qualification = qualification;
         this.assignments=new LinkedList<>();
     }
