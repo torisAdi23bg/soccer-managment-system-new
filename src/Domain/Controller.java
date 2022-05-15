@@ -40,6 +40,9 @@ public class Controller {
     }
 
     public String assignGames(String leagueID, String seasonID, boolean policy){
+        if (currentLogged == null) {
+            return "No logged-in association representative";
+        }
 
         if(!(currentLogged instanceof AssociationRepresentive)){
             return "The user that is currently logged in is not an Association Representive";
@@ -66,7 +69,6 @@ public class Controller {
         if (currentLogged == null || !(currentLogged instanceof AssociationRepresentive)) {
             return "No logged-in association representative";
         }
-
 
         Referee referee = db.getReferee(refereeUsername);
         League league = db.getLeague(leagueID);

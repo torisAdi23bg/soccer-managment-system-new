@@ -14,48 +14,22 @@ import java.util.LinkedList;
 public class Dao {
     private static Dao single = null;
     private DBConnection con;
-    Connection connection=null;
-    ResultSet rs=null;
-    PreparedStatement ps=null;
-    private Dao()
-    {
-        con=new DBConnection();
+    Connection connection = null;
+    ResultSet rs = null;
+    PreparedStatement ps = null;
+
+    private Dao() {
+        con = new DBConnection();
     }
-    public static Dao getInstance()
-    {
+
+    public static Dao getInstance() {
         if (single == null)
             single = new Dao();
 
         return single;
     }
 
-    // return null if no such subscriber
-    //DONE
-    public Subscriber getSubscriber(String username) {
-        Subscriber subscriber=null;
-
-    try {
-         connection= con.getConnection();
-
-        String sql="SELECT * FROM SUBSCRIBER";
-        ps=connection.prepareStatement(sql);
-        rs= ps.executeQuery();
-        String res="";
-        while(rs.next()){
-            if(rs.getString("USERNAME").equals(username)){
-                res=rs.getString("PASSWORD");
-                break;}
-
-        }
-        connection.close();
-    if (res.equals(""))
-        return null;
-     subscriber = new Subscriber(username,res);
-
-    }catch (Exception e){
-    e.getMessage();
-}
-    finally {
+    private static void closeDB(Connection connection, ResultSet rs, PreparedStatement ps) {
         if (rs != null) {
             try {
                 rs.close();
@@ -66,23 +40,57 @@ public class Dao {
                 ps.close();
             } catch (SQLException e) { /* Ignored */}
         }
-        if (connection != null) {
-            try {
-                connection.close();
-            } catch (SQLException e) { /* Ignored */}
-        }
+//        if (connection != null) {
+//            try {
+////                connection.close();
+////            } catch (SQLException e) { /* Ignored */}
+//        }
+
     }
+
+    // return null if no such subscriber
+    //DONE
+    public Subscriber getSubscriber(String username) {
+        Subscriber subscriber = null;
+
+        try {
+            connection = con.getConnection();
+
+
+            String sql = "SELECT * FROM SUBSCRIBER";
+            ps = connection.prepareStatement(sql);
+            rs = ps.executeQuery();
+            String res = "";
+            while (rs.next()) {
+                if (rs.getString("USERNAME").equals(username)) {
+                    res = rs.getString("PASSWORD");
+                    break;
+                }
+
+            }
+
+            if (res.equals(""))
+            {
+                subscriber=null;
+            }
+            else {
+                subscriber = new Subscriber(username, res);
+            }
+
+        } catch (Exception e) {
+            e.getMessage();
+        } finally {
+            closeDB(connection, rs, ps);
+        }
         return subscriberToRealInstance(subscriber);
 
     }
 
+
+
     private Subscriber subscriberToRealInstance(Subscriber subscriber) {
-
-
         try {
             connection= con.getConnection();
-
-
             String sql="SELECT * FROM AssociationRepresentive WHERE USERNAME='"+subscriber.username+"'";
             ps=connection.prepareStatement(sql);
             rs= ps.executeQuery();
@@ -93,8 +101,6 @@ public class Dao {
                     }
 
             }
-
-
             sql="SELECT * FROM Referee WHERE USERNAME='"+subscriber.username+"'";
             ps=connection.prepareStatement(sql);
             rs= ps.executeQuery();
@@ -111,21 +117,7 @@ public class Dao {
             e.getMessage();
         }
         finally {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException e) { /* Ignored */}
-            }
-            if (ps != null) {
-                try {
-                    ps.close();
-                } catch (SQLException e) { /* Ignored */}
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) { /* Ignored */}
-            }
+            closeDB(connection,rs,ps);
 
         }
         return null;
@@ -150,29 +142,18 @@ public class Dao {
             }
 
             if (res.equals(""))
-                return null;
-            referee = new Referee(username, res,res);
-
-
+            {
+                referee=null;
+            }
+            else
+            {
+                referee = new Referee(username, res,res);
+            }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
         finally {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException e) { /* Ignored */}
-            }
-            if (ps != null) {
-                try {
-                    ps.close();
-                } catch (SQLException e) { /* Ignored */}
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) { /* Ignored */}
-            }
+            closeDB(connection,rs,ps);
         }
         return referee;
 
@@ -195,29 +176,19 @@ public class Dao {
             }
 
             if (res.equals(""))
-                return null;
-            league = new League(res);
-
+            {
+                league=null;
+            }
+            else
+            {
+                league = new League(res);
+            }
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
         finally {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException e) { /* Ignored */}
-            }
-            if (ps != null) {
-                try {
-                    ps.close();
-                } catch (SQLException e) { /* Ignored */}
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) { /* Ignored */}
-            }
+            closeDB(connection,rs,ps);
         }
         return league;
     }
@@ -238,30 +209,20 @@ public class Dao {
                     break;
                 }
             }
-
             if (res.equals(""))
-                return null;
-            season = new Season(res);
+            {
+                season=null;
+            }
+            else
+            {
+                season = new Season(res);
+            }
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
         finally {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException e) { /* Ignored */}
-            }
-            if (ps != null) {
-                try {
-                    ps.close();
-                } catch (SQLException e) { /* Ignored */}
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) { /* Ignored */}
-            }
+            closeDB(connection,rs,ps);
         }
         return season;
     }
@@ -291,21 +252,7 @@ public class Dao {
             throwables.printStackTrace();
         }
         finally {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException e) { /* Ignored */}
-            }
-            if (ps != null) {
-                try {
-                    ps.close();
-                } catch (SQLException e) { /* Ignored */}
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) { /* Ignored */}
-            }
+            closeDB(connection,rs,ps);
         }
         return teams;
     }
@@ -336,21 +283,7 @@ public class Dao {
            throwables.printStackTrace();
        }
        finally {
-           if (rs != null) {
-               try {
-                   rs.close();
-               } catch (SQLException e) { /* Ignored */}
-           }
-           if (ps != null) {
-               try {
-                   ps.close();
-               } catch (SQLException e) { /* Ignored */}
-           }
-           if (connection != null) {
-               try {
-                   connection.close();
-               } catch (SQLException e) { /* Ignored */}
-           }
+           closeDB(connection,rs,ps);
        }
        return team;
 
@@ -381,21 +314,7 @@ public class Dao {
             return false;
         }
         finally {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException e) { /* Ignored */}
-            }
-            if (ps != null) {
-                try {
-                    ps.close();
-                } catch (SQLException e) { /* Ignored */}
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) { /* Ignored */}
-            }
+            closeDB(connection,rs,ps);
         }
         return true;
     }
@@ -422,21 +341,7 @@ public class Dao {
             return "false";
         }
         finally {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException e) { /* Ignored */}
-            }
-            if (ps != null) {
-                try {
-                    ps.close();
-                } catch (SQLException e) { /* Ignored */}
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) { /* Ignored */}
-            }
+            closeDB(connection,rs,ps);
         }
 
         return "true";
@@ -466,21 +371,7 @@ public class Dao {
             throwables.printStackTrace();
         }
         finally {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException e) { /* Ignored */}
-            }
-            if (ps != null) {
-                try {
-                    ps.close();
-                } catch (SQLException e) { /* Ignored */}
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) { /* Ignored */}
-            }
+            closeDB(connection,rs,ps);
         }
         return pairs;
     }
@@ -497,21 +388,7 @@ public class Dao {
             System.out.println("ERRORRRRR");
         }
         finally {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException e) { /* Ignored */}
-            }
-            if (ps != null) {
-                try {
-                    ps.close();
-                } catch (SQLException e) { /* Ignored */}
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) { /* Ignored */}
-            }
+            closeDB(connection,rs,ps);
         }
         System.out.println("delted values");
     }

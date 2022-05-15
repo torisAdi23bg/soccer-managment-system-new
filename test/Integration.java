@@ -41,17 +41,17 @@ public class Integration {
 
         //login as AR successful. assignReferee wont work because of null inputs
         app.login("2", "2");
-        assertEquals("false",app.assignReferee("notexist",seasonID,refereeUsername));
-        assertEquals("false",app.assignReferee(legueId,"notexist",refereeUsername));
-        assertEquals("false",app.assignReferee(legueId,seasonID,"notexist"));
+        assertEquals("Enter valid details",app.assignReferee("notexist",seasonID,refereeUsername));
+        assertEquals("Enter valid details",app.assignReferee(legueId,"notexist",refereeUsername));
+        assertEquals("Enter valid details",app.assignReferee(legueId,seasonID,"notexist"));
         app.domainController.logOut();
 
-        //login as AR successful so assignReferee should work
+//        login as AR successful so assignReferee should work
         app.login("2", "2");
         assertEquals("true",app.assignReferee(legueId,seasonID,refereeUsername));
         app.domainController.logOut();
-
-        //login as AR successful. assignment done twice
+//
+//        login as AR successful. assignment done twice
         app.login("2", "2");
         assertEquals("Assignment already exists",app.assignReferee(legueId,seasonID,refereeUsername));
         app.domainController.logOut();
@@ -59,7 +59,7 @@ public class Integration {
     }
     @Test
     public void login_and_assignGames(){
-        //no login done, assignGames shouldn't work
+//        no login done, assignGames shouldn't work
         assertEquals("No logged-in association representative",app.assignGames(legueId,seasonID,true));
         assertEquals("No logged-in association representative",app.assignGames(legueId,seasonID,false));
 
@@ -75,8 +75,8 @@ public class Integration {
 
         //login as regular subscriber successful so assignGames shouldn't work
         app.login("1", "1");
-        assertEquals("No logged-in association representative",app.assignGames(legueId,seasonID,true));
-        assertEquals("No logged-in association representative",app.assignGames(legueId,seasonID,false));
+        assertEquals("The user that is currently logged in is not an Association Representive",app.assignGames(legueId,seasonID,true));
+        assertEquals("The user that is currently logged in is not an Association Representive",app.assignGames(legueId,seasonID,false));
         app.domainController.logOut();
 
         //login as AR unsuccessful so assignGames shouldn't work
