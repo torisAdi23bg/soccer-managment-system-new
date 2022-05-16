@@ -15,6 +15,7 @@ public class Unit {
         Subscriber sub1 = new Subscriber("user1", "password1");
 
         assertEquals(false, sub1.login("password2"));
+
         assertEquals(true, sub1.login("password1"));
 
     }
@@ -28,9 +29,7 @@ public class Unit {
 
         Season season2 = new Season("summer");
         League league2 = new League("minors league");
-
         ref1.assignments.add(new Pair(season1,league1));
-
         assertEquals(false, ref1.isAssignmentExists(season2,league2));
         assertEquals(false, ref1.isAssignmentExists(season1,league2));
         assertEquals(false, ref1.isAssignmentExists(season2,league1));

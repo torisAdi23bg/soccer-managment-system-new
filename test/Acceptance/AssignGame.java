@@ -1,5 +1,6 @@
 package Acceptance;
 
+import DataAccess.Dao;
 import Service.JavaApplication;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
@@ -10,7 +11,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.LinkedList;
-
 import static org.junit.Assert.assertEquals;
 
 public class AssignGame {
@@ -18,44 +18,60 @@ public class AssignGame {
     String leagueID = "2022";
     String seasonID = "season1";
     Gson gson = new Gson();
-    Type gameListType = new TypeToken<LinkedList<Game>>() {
-    }.getType();
-    String res1 = app.assignGames(leagueID, seasonID, true);
-    String res2 = app.assignGames(leagueID, seasonID, false);
-    @BeforeEach
-    public void beforeEach(){
 
+    Dao db=Dao.getInstance();
+
+
+    public void afterAll(){
+        Dao db=Dao.getInstance();
+        db.deleteAllRows("LeagueSeasonReferee");
+        db.deleteAllRows("Game");
     }
+
     @Test
     public void invalidSubscriber() {
         app.login("1", "1");
         assertEquals("The user that is currently logged in is not an Association Representive",
                 app.assignGames(leagueID, seasonID, true));
+        app.logout();
+        afterAll();
 
     }
     @Test
     public void assertInvalidInputs( ) {
-        app.login("stubAR", "1234");
+        app.login("2","2");
+
         assertEquals("Enter valid details", app.assignGames(leagueID, null, true));
         assertEquals("Enter valid details", app.assignGames(null, seasonID, true));
         assertEquals("Enter valid details", app.assignGames("not exist", seasonID, true));
         assertEquals("Enter valid details", app.assignGames(leagueID, "not exist", true));
+        afterAll();
+
+        app.logout();
+
     }
     @Test
     public void assertPolicy1Even() {
+        app.login("2","2");
+        String res1 = app.assignGames(leagueID, "season1", true);
+        db.deleteAllRows("Game");
 
         //all teams-BARCELONA,HAPOEL,MACCABI REAL
         Team maccabi = new Team("MACCABI", "M",true,true);
         Team barcelona = new Team("BARCELONA", "B",true,true);
-
-
         LinkedList<Game> expectedRes1 = new LinkedList<>();
-        expectedRes1.add(new Game(maccabi.homeField, maccabi, barcelona));
         expectedRes1.add(new Game(barcelona.homeField, barcelona, maccabi));
-        assertEquals(expectedRes1,res1);
+        String expected = gson.toJson(expectedRes1);
+        assertEquals(expected,res1);
+        afterAll();
+        app.logout();
+
     }
     @Test
     public void assertPolicy1Odd() {
+        app.login("2","2");
+        String res2 = app.assignGames(leagueID, "summer", true);
+        db.deleteAllRows("Game");
 
         //all teams-BARCELONA,HAPOEL,MACCABI REAL
         Team maccabi = new Team("MACCABI", "M",true,true);
@@ -65,21 +81,37 @@ public class AssignGame {
         LinkedList<Game> expectedRes1 = new LinkedList<>();
 
         expectedRes1.add(new Game(barcelona.homeField, barcelona, maccabi));
-        expectedRes1.add(new Game(hapoel.homeField, hapoel, maccabi));
-        expectedRes1.add(new Game(maccabi.homeField, maccabi, barcelona));
-        assertEquals(expectedRes1,res1);
+//        expectedRes1.add(new Game(hapoel.homeField, hapoel, maccabi));
+//        expectedRes1.add(new Game(maccabi.homeField, maccabi, barcelona));
+        String expected = gson.toJson(expectedRes1);
+        assertEquals(expected,res2);
+        afterAll();
+        app.logout();
+
     }
     @Test
     public void assertPolicy2() {
+        app.login("2","2");
+        String res3 = app.assignGames(leagueID, "summer", false);
+        db.deleteAllRows("Game");
 
         //all teams-BARCELONA,HAPOEL,MACCABI REAL
         Team maccabi = new Team("MACCABI", "M",true,true);
         Team barcelona = new Team("BARCELONA", "B",true,true);
-
+        Team hapoel = new Team("HAPOEL", "H",true,true);
 
         LinkedList<Game> expectedRes1 = new LinkedList<>();
         expectedRes1.add(new Game(maccabi.homeField, maccabi, barcelona));
+        expectedRes1.add(new Game(maccabi.homeField, maccabi, hapoel));
         expectedRes1.add(new Game(barcelona.homeField, barcelona, maccabi));
-        assertEquals(res2, expectedRes1);
+        expectedRes1.add(new Game(barcelona.homeField, barcelona, hapoel));
+        expectedRes1.add(new Game(hapoel.homeField, hapoel, maccabi));
+        expectedRes1.add(new Game(hapoel.homeField, hapoel, barcelona));
+        String expected = gson.toJson(expectedRes1);
+
+        assertEquals(expected, res3);
+        afterAll();
+        app.logout();
+
     }
 }

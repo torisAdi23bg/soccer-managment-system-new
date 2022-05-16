@@ -22,4 +22,9 @@ public class JavaApplication {
         Logger.getInstance().logLogin(username, password,res);
         return res;
     }
+    public boolean logout()
+    {
+        domainController.logOut();
+        return true;
+    }
 }

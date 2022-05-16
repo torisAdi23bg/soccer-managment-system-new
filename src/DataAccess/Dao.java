@@ -147,7 +147,7 @@ public class Dao {
             }
             else
             {
-                referee = new Referee(username, res,res);
+                referee = new Referee(username, res,res); //todo: why?
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -231,6 +231,8 @@ public class Dao {
     //return null if no such leagueID,seasonID teams
     public LinkedList<Team> getAllTeams(String leagueID, String seasonID) {
         LinkedList<Team> teams=new LinkedList<>();
+        LinkedList<String> teamsNames=new LinkedList<>();
+
         try {
              connection = con.getConnection();
 
@@ -240,12 +242,12 @@ public class Dao {
             String res = "";
             while (rs.next()) {
                 if (rs.getString("LEAGUE").equals(leagueID)&&rs.getString("SEASON").equals(seasonID)) {
-                    teams.add(getTeam(rs.getString("TEAM")));
-                    break;
+                    teamsNames.add(rs.getString("TEAM"));
+
                 }
             }
 
-            if (teams.size()==0)
+            if (teamsNames.size()==0)
                 return new LinkedList<Team>();
 
         } catch (SQLException throwables) {
@@ -253,6 +255,10 @@ public class Dao {
         }
         finally {
             closeDB(connection,rs,ps);
+        }
+        for(String team: teamsNames)
+        {
+            teams.add(getTeam(team));
         }
         return teams;
     }
@@ -297,17 +303,17 @@ public class Dao {
         try {
              connection = con.getConnection();
 
-            String sql="INSERT INTO Game (TEAM1 , TEAM2 , MAINREFEREE , SCORE, DATE,FIELD ) VALUES(?,?,?,?,?,?,?)";
+            String sql="INSERT INTO Game (TEAM1 , TEAM2 , MAINREFEREE , SCORE, DATE,FIELD ) VALUES(?,?,?,?,?,?)";
             for(int i=0;i< newGamesToSave.size();i++){
                 Game g= newGamesToSave.get(i);
                 ps=connection.prepareStatement(sql);
                 ps.setString(1,g.hosting.id);
                 ps.setString(2,g.visiting.id);
-                ps.setString(3,null);//TODO:ADD REFEREE TO GAME!!!!!
+                ps.setString(3,"RefereeNeed");//TODO:ADD REFEREE TO GAME!!!!!
                 ps.setString(4,g.score);
                 ps.setString(5,g.date);
                 ps.setString(6,g.field);
-                ps.executeQuery();
+                ps.executeUpdate();
             }
             connection.close();
         }catch (Exception e){
@@ -331,13 +337,15 @@ public class Dao {
             String sql="INSERT INTO LeagueSeasonReferee(League, Season, Referee) VALUES(?,?,?)";
 
                 ps=connection.prepareStatement(sql);
-                ps.setString(1,referee.username);
-                ps.setString(2,league.id);
-                ps.setString(3,season.id);
-                ps.executeUpdate();
+                ps.setString(1,league.id);
+                ps.setString(2,season.id);
+                ps.setString(3,referee.username);
+
+            ps.executeUpdate();
 
 
         }catch (Exception e){
+
             return "false";
         }
         finally {
@@ -363,7 +371,6 @@ public class Dao {
                     pairs.add(new Pair<Season,League>(new Season(rs.getString("SEASON")),new League(rs.getString("LEAGUE"))));
                 }
             }
-            connection.close();
             if (pairs.size()==0)
                 return null;
 
@@ -376,21 +383,21 @@ public class Dao {
         return pairs;
     }
 
-    public void deleteAllRows(String TableName){
+    public boolean deleteAllRows(String TableName){
         try {
              connection = con.getConnection();
 
             String sql = "DELETE FROM "+TableName;
             ps=connection.prepareStatement(sql);
-            ps.executeQuery();
-            connection.close();
+            ps.executeUpdate();
         }catch (Exception e){
-            System.out.println("ERRORRRRR");
+            System.out.println(e);
         }
         finally {
             closeDB(connection,rs,ps);
         }
-        System.out.println("delted values");
+        return false;
+
     }
 }
 
