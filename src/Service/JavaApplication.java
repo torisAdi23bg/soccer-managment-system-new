@@ -16,4 +16,10 @@ public class JavaApplication {
     public String login(String username,String password){
         return domainController.login(username,password);
     }
+
+    public boolean logout()
+    {
+        domainController.logOut();
+        return true;
+    }
 }
