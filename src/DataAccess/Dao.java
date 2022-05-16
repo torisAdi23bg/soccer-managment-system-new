@@ -326,9 +326,33 @@ public class Dao {
     }
 
 
+
+    public boolean isInRefLEagueSeason(String referee, String league, String season){
+        try {
+            connection = con.getConnection();
+            String sql = "SELECT * FROM LeagueSeasonReferee";
+            ps = connection.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                if (rs.getString("Referee").equals(referee)&&rs.getString("League").equals(league)&&rs.getString("Season").equals(season)) {
+                    return true;
+                }
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        finally {
+            closeDB(connection,rs,ps);
+        }
+        return false;
+    }
+
     //return "true" if succeeded, "false" else
     //no need to check if existing in db. They are existing for sure.
     public String addRefereeToLEAGUESEASONTable(Referee referee, League league, Season season) {
+
+
         try {
 
              connection = con.getConnection();
