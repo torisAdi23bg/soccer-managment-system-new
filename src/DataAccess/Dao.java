@@ -98,7 +98,7 @@ public class Dao {
             while(rs.next()){
                 if(rs.getString("USERNAME").equals(subscriber.username)){
                     return new AssociationRepresentive(subscriber.username,subscriber.password);
-                    }
+                }
 
             }
             sql="SELECT * FROM Referee WHERE USERNAME='"+subscriber.username+"'";
@@ -129,7 +129,7 @@ public class Dao {
     public Referee getReferee(String username) {
         Referee referee = null;
         try {
-             connection = con.getConnection();
+            connection = con.getConnection();
             String sql = "SELECT * FROM REFEREE";
             ps = connection.prepareStatement(sql);
             rs = ps.executeQuery();
@@ -158,11 +158,11 @@ public class Dao {
         return referee;
 
     }
-        //return null if no such league
+    //return null if no such league
     public League getLeague(String leagueID) {
         League league=null;
         try {
-             connection = con.getConnection();
+            connection = con.getConnection();
 
             String sql = "SELECT * FROM LEAGUE";
             ps = connection.prepareStatement(sql);
@@ -197,7 +197,7 @@ public class Dao {
     public Season getSeason(String seasonID) {
         Season season=null;
         try {
-             connection = con.getConnection();
+            connection = con.getConnection();
 
             String sql = "SELECT * FROM SEASON";
             ps = connection.prepareStatement(sql);
@@ -227,14 +227,14 @@ public class Dao {
         return season;
     }
 
-     //TODO: CHECKKKKK
+    //TODO: CHECKKKKK
     //return null if no such leagueID,seasonID teams
     public LinkedList<Team> getAllTeams(String leagueID, String seasonID) {
         LinkedList<Team> teams=new LinkedList<>();
         LinkedList<String> teamsNames=new LinkedList<>();
 
         try {
-             connection = con.getConnection();
+            connection = con.getConnection();
 
             String sql = "SELECT * FROM LeagueSeasonTeams";
             ps = connection.prepareStatement(sql);
@@ -264,48 +264,85 @@ public class Dao {
     }
 
 
-   public Team  getTeam(String teamid){
-       Team team=null;
-       try {
+    public Team  getTeam(String teamid){
+        Team team=null;
+        try {
             connection = con.getConnection();
 
-           String sql = "SELECT * FROM TEAM";
-           ps = connection.prepareStatement(sql);
-           rs = ps.executeQuery();
-           String res = "";
-           while (rs.next()) {
-               if (rs.getString("ID").equals(teamid)) {
-                   res="found";
-                   break;
-               }
-           }
+            String sql = "SELECT * FROM TEAM";
+            ps = connection.prepareStatement(sql);
+            rs = ps.executeQuery();
+            String res = "";
+            while (rs.next()) {
+                if (rs.getString("ID").equals(teamid)) {
+                    res="found";
+                    break;
+                }
+            }
 
-           if (res.equals(""))
-               return null;
-           team = new Team(rs.getString("ID"),rs.getString("HOMEFIELD")
-           ,rs.getString("ACTIVATED").equals("TRUE"),rs.getString("CLOSEDFOREVER").equals("TRUE"));
+            if (res.equals(""))
+                return null;
+            team = new Team(rs.getString("ID"),rs.getString("HOMEFIELD")
+                    ,rs.getString("ACTIVATED").equals("TRUE"),rs.getString("CLOSEDFOREVER").equals("TRUE"));
 
-       } catch (SQLException throwables) {
-           throwables.printStackTrace();
-       }
-       finally {
-           closeDB(connection,rs,ps);
-       }
-       return team;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        finally {
+            closeDB(connection,rs,ps);
+        }
+        return team;
 
 
+    }
+    public boolean isGameExist(Game g){
+        boolean flag=false;
+        try {
+            connection = con.getConnection();
+
+            String sql = "SELECT * FROM Game";
+            ps = connection.prepareStatement(sql);
+            rs = ps.executeQuery();
+            String res = "";
+            while (rs.next()) {
+                if (rs.getString("TEAM1").equals(g.hosting)&&rs.getString("TEAM2").equals(g.visiting)
+                        &&rs.getString("DATE").equals(g.date)&&rs.getString("Field").equals(g.field)) {
+                    flag=true;
+                    break;
+                }
+            }
+
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        finally {
+            closeDB(connection,rs,ps);
+        }
+        return flag;
     }
 
 
 
     //return true if succeeded
+    //
     public boolean saveGames(LinkedList<Game> newGamesToSave) {
-        try {
-             connection = con.getConnection();
+        //before inserting all the games we check if it is valid to enter all of them (if its not we return false and wont enter them)
+        for(int i=0;i< newGamesToSave.size();i++) {
+            Game g = newGamesToSave.get(i);
+            if (isGameExist(g)) {
+                return false;
+            }
+        }
 
-            String sql="INSERT INTO Game (TEAM1 , TEAM2 , MAINREFEREE , SCORE, DATE,FIELD ) VALUES(?,?,?,?,?,?)";
+
+        try {
             for(int i=0;i< newGamesToSave.size();i++){
                 Game g= newGamesToSave.get(i);
+            connection = con.getConnection();
+
+            String sql="INSERT INTO Game (TEAM1 , TEAM2 , MAINREFEREE , SCORE, DATE,FIELD ) VALUES(?,?,?,?,?,?)";
+
                 ps=connection.prepareStatement(sql);
                 ps.setString(1,g.hosting.id);
                 ps.setString(2,g.visiting.id);
@@ -325,19 +362,22 @@ public class Dao {
         return true;
     }
 
-
-
-    public boolean isInRefLEagueSeason(String referee, String league, String season){
+    public boolean isTripleOfRefereeExist(Referee referee,League league,Season season){
+        boolean flag=false;
         try {
             connection = con.getConnection();
+
             String sql = "SELECT * FROM LeagueSeasonReferee";
             ps = connection.prepareStatement(sql);
             rs = ps.executeQuery();
+            String res = "";
             while (rs.next()) {
-                if (rs.getString("Referee").equals(referee)&&rs.getString("League").equals(league)&&rs.getString("Season").equals(season)) {
-                    return true;
+                if (rs.getString("REFEREE").equals(referee.username)&&rs.getString("LEAGUE").equals(league.id)&&rs.getString("Season").equals(season.id)) {
+                    flag=true;
+                    break;
                 }
             }
+
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -345,25 +385,28 @@ public class Dao {
         finally {
             closeDB(connection,rs,ps);
         }
-        return false;
+        return flag;
     }
+
 
     //return "true" if succeeded, "false" else
     //no need to check if existing in db. They are existing for sure.
     public String addRefereeToLEAGUESEASONTable(Referee referee, League league, Season season) {
-
+        if (isTripleOfRefereeExist(referee,league,season)){
+            return "false";
+        }
 
         try {
 
-             connection = con.getConnection();
+            connection = con.getConnection();
 
 
             String sql="INSERT INTO LeagueSeasonReferee(League, Season, Referee) VALUES(?,?,?)";
 
-                ps=connection.prepareStatement(sql);
-                ps.setString(1,league.id);
-                ps.setString(2,season.id);
-                ps.setString(3,referee.username);
+            ps=connection.prepareStatement(sql);
+            ps.setString(1,league.id);
+            ps.setString(2,season.id);
+            ps.setString(3,referee.username);
 
             ps.executeUpdate();
 
@@ -385,7 +428,7 @@ public class Dao {
 
         LinkedList<Pair<Season,League>> pairs=new LinkedList<>();
         try {
-             connection = con.getConnection();
+            connection = con.getConnection();
 
             String sql = "SELECT * FROM LeagueSeasonReferee";
             ps = connection.prepareStatement(sql);
@@ -409,7 +452,7 @@ public class Dao {
 
     public boolean deleteAllRows(String TableName){
         try {
-             connection = con.getConnection();
+            connection = con.getConnection();
 
             String sql = "DELETE FROM "+TableName;
             ps=connection.prepareStatement(sql);
@@ -424,5 +467,3 @@ public class Dao {
 
     }
 }
-
-
