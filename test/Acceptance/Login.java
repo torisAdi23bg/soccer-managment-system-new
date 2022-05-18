@@ -23,28 +23,35 @@ public class Login {
         //ar: association reepresentive
         app.domainController.logOut();
     }
-
     @Test
-    public void loginTest() {
-        //ar: association reepresentive
+    public void assertBlankUsername() {
         assertEquals("false", app.login("", "1234"));
         app.logout();
-
+    }
+    @Test
+    public void assertBlankPassword() {
         assertEquals("false", app.login("stubAR", ""));
         app.logout();
-
+    }
+    @Test
+    public void assertBlankUsernameAndPassword() {
         assertEquals("false", app.login("", ""));
         app.logout();
-
-        assertEquals("false", app.login("not exist", ""));
+    }
+    @Test
+    public void assertUsernameDontExist() {
+        assertEquals("false", app.login("not exist", "1234"));
         app.logout();
-
+    }
+    @Test
+    public void assertIncorrectPassword() {
         assertEquals("false", app.login("stubAR", "incorrect password"));
         app.logout();
-
-
+    }
+    @Test
+    public void assertSuccess() {
         assertEquals("true", app.login("stubAR", "1234"));
         app.logout();
-
     }
+
 }

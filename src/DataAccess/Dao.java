@@ -450,6 +450,40 @@ public class Dao {
         return pairs;
     }
 
+    public boolean deleteLeagueSeasonReferee(String leagueId,String seasonId,String refereeID){
+        try {
+            connection = con.getConnection();
+
+            String sql = "DELETE FROM "+"LeagueSeasonReferee WHERE LEAGUE="+leagueId
+                    +" AND SEASON="+seasonId+ " AND REFEREE="+refereeID;
+            ps=connection.prepareStatement(sql);
+            ps.executeUpdate();
+        }catch (Exception e){
+            System.out.println(e);
+        }
+        finally {
+            closeDB(connection,rs,ps);
+        }
+        return false;
+
+    }
+    public boolean deleteGame(Game game){
+        try {
+            connection = con.getConnection();
+
+            String sql = "DELETE FROM "+"LeagueSeasonReferee WHERE TEAM1="+game.hosting
+                    +" AND TEAM2="+game.visiting+ " AND DATE="+game.date+" AND FIELD="+game.field;
+            ps=connection.prepareStatement(sql);
+            ps.executeUpdate();
+        }catch (Exception e){
+            System.out.println(e);
+        }
+        finally {
+            closeDB(connection,rs,ps);
+        }
+        return false;
+
+    }
     public boolean deleteAllRows(String TableName){
         try {
             connection = con.getConnection();
