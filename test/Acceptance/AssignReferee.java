@@ -22,26 +22,38 @@ public class AssignReferee {
         db.deleteAllRows("LeagueSeasonReferee");
         db.deleteAllRows("Game");
     }
-
     @Test
-    public void invalidUser(){
+    public void subscriberIsNotLoggedIn(){
         app.logout();
-        //no user is currently logged in
         assertEquals("No logged-in association representative",app.assignReferee(legueId,seasonID,refereeUsername));
+    }
+    @Test
+    public void subscriberIsNotAR(){
         //a user that is not AR is currently logged in use case
         app.login("1","1");
         assertEquals("No logged-in association representative",app.assignReferee(legueId,seasonID,refereeUsername));
         app.logout();
-        afterAll();
     }
     @Test
-    public void assertInvalidInput(){
+    public void leagueDoesntExist(){
+        //a user that is not AR is currently logged in use case
         app.login("2","2");
         assertEquals("Enter valid details",app.assignReferee("not exist",seasonID,refereeUsername));
+        app.logout();
+    }
+    @Test
+    public void seasonDoesntExist(){
+        //a user that is not AR is currently logged in use case
+        app.login("2","2");
         assertEquals("Enter valid details",app.assignReferee(legueId,"not exist",refereeUsername));
+        app.logout();
+    }
+    @Test
+    public void refereeDoesntExist(){
+        //a user that is not AR is currently logged in use case
+        app.login("2","2");
         assertEquals("Enter valid details",app.assignReferee(legueId,seasonID,"not exist"));
         app.logout();
-        afterAll();
     }
     @Test
     public void assertSuccess(){
