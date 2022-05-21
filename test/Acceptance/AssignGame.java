@@ -36,18 +36,30 @@ public class AssignGame {
 
     }
     @Test
-    public void assertInvalidInputs( ) {
+    public void assertNullSeason( ) {
         app.login("2","2");
-
         assertEquals("Enter valid details", app.assignGames(leagueID, null, true));
-        assertEquals("Enter valid details", app.assignGames(null, seasonID, true));
-        assertEquals("Enter valid details", app.assignGames("not exist", seasonID, true));
-        assertEquals("Enter valid details", app.assignGames(leagueID, "not exist", true));
-        afterAll();
-
         app.logout();
-
     }
+    @Test
+    public void assertNullLeague( ) {
+        app.login("2","2");
+        assertEquals("Enter valid details", app.assignGames(null, seasonID, true));
+        app.logout();
+    }
+    @Test
+    public void assertLeagueDoesntExist( ) {
+        app.login("2","2");
+        assertEquals("Enter valid details", app.assignGames("not exist", seasonID, true));
+        app.logout();
+    }
+    @Test
+    public void assertSeasonDoesntExist( ) {
+        app.login("2","2");
+        assertEquals("Enter valid details", app.assignGames(leagueID, "not exist", true));
+        app.logout();
+    }
+
     @Test
     public void assertPolicy1Even() {
         app.login("2","2");
