@@ -19,6 +19,7 @@ public class Unit {
 
     AssociationRepresentive AR = new AssociationRepresentive("2", "2");
 //
+    //
     @Test
     public void Unit1_AssignmentExist_wrong_inputs(){
         ref1.assignments.add(new Pair(season1,league1));
