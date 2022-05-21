@@ -26,6 +26,7 @@ public class AssignReferee {
     public void subscriberIsNotLoggedIn(){
         app.logout();
         assertEquals("No logged-in association representative",app.assignReferee(legueId,seasonID,refereeUsername));
+        afterAll();
     }
     @Test
     public void subscriberIsNotAR(){
@@ -33,6 +34,7 @@ public class AssignReferee {
         app.login("1","1");
         assertEquals("No logged-in association representative",app.assignReferee(legueId,seasonID,refereeUsername));
         app.logout();
+        afterAll();
     }
     @Test
     public void leagueDoesntExist(){
@@ -40,6 +42,7 @@ public class AssignReferee {
         app.login("2","2");
         assertEquals("Enter valid details",app.assignReferee("not exist",seasonID,refereeUsername));
         app.logout();
+        afterAll();
     }
     @Test
     public void seasonDoesntExist(){
@@ -47,6 +50,7 @@ public class AssignReferee {
         app.login("2","2");
         assertEquals("Enter valid details",app.assignReferee(legueId,"not exist",refereeUsername));
         app.logout();
+        afterAll();
     }
     @Test
     public void refereeDoesntExist(){
@@ -54,6 +58,7 @@ public class AssignReferee {
         app.login("2","2");
         assertEquals("Enter valid details",app.assignReferee(legueId,seasonID,"not exist"));
         app.logout();
+        afterAll();
     }
     @Test
     public void assertSuccess(){

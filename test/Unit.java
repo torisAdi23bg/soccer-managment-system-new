@@ -1,5 +1,6 @@
 import DataAccess.Dao;
 import Domain.*;
+import javafx.util.Pair;
 import org.junit.Test;
 
 import java.util.LinkedList;
@@ -31,7 +32,7 @@ public class Unit {
     @Test
     public void Unit2_AssignmentExist_wrong_inputs(){
         ref1.assignments.add(new Pair(season1,league1));
-        assertEquals(false, ref1.isAssignmentExists(season1,league2));
+        assertEquals(false, ref1.isAssignmentExists(season1,new League("2021")));
         ref1.assignments.remove(0);
     }
 
@@ -57,7 +58,7 @@ public class Unit {
         Team barcelona = new Team("BARCELONA", "B",true,true);
         LinkedList<Game> expectedRes1 = new LinkedList<>();
         expectedRes1.add(new Game(barcelona.homeField, barcelona, maccabi));
-        assertEquals(result.get(0), expectedRes1.get(0));
+        assertEquals(result.toString(), expectedRes1.toString());
     }
 
     @Test
@@ -70,7 +71,7 @@ public class Unit {
         LinkedList<Game> expectedRes1 = new LinkedList<>();
         expectedRes1.add(new Game(barcelona.homeField, barcelona, maccabi));
 
-        assertEquals(result.get(0), expectedRes1.get(0));
+        assertEquals(result.toString(), expectedRes1.toString());
     }
 
     private LinkedList<Game> true_stub(LinkedList<Team> teams){
@@ -105,7 +106,7 @@ public class Unit {
     public void Unit7_assignGames_policyTrue_stub(){
         LinkedList<Game> result =  AR.assignGames(league1, season1, true);
         LinkedList<Game> stubed_results = this.assignGames_with_stub_policy1(league1, season1, true);
-        assertEquals(result, stubed_results);
+        assertEquals(result.toString(), stubed_results.toString());
     }
 
     @Test
@@ -125,11 +126,12 @@ public class Unit {
         expectedRes1.add(new Game(hapoel.homeField, hapoel, maccabi));
         expectedRes1.add(new Game(hapoel.homeField, hapoel, barcelona));
 
-        boolean check_if_equal = true;
-        for (int i=0;i<result.size();i++){
-            check_if_equal = check_if_equal && result.get(i).equals(expectedRes1.get(i));
-        }
-        assertTrue(check_if_equal);
+//        boolean check_if_equal = true;
+//        for (int i=0;i<result.size();i++){
+//            check_if_equal = check_if_equal && result.get(i).equals(expectedRes1.get(i));
+//        }
+//        assertTrue(check_if_equal);
+        assertEquals(expectedRes1.toString(),result.toString());
     }
 
     private LinkedList<Game> false_stub(LinkedList<Team> teams){
@@ -171,7 +173,7 @@ public class Unit {
     public void Unit9_assignGames_policyFalse_stub(){
         LinkedList<Game> result = AR.assignGames(league1, season2, false);
         LinkedList<Game> stubed_result = this.assignGames_with_stub_policy2(league1, season2, false);
-        assertEquals(result, stubed_result);
+        assertEquals(result.toString(), stubed_result.toString());
     }
 
     @Test

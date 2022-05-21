@@ -5,6 +5,7 @@ import Domain.Game;
 import Domain.Team;
 import Service.JavaApplication;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import org.junit.Test;
 
 import java.util.LinkedList;
@@ -40,30 +41,35 @@ public class AssignGame {
         app.login("2","2");
         assertEquals("Enter valid details", app.assignGames(leagueID, null, true));
         app.logout();
+        afterAll();
     }
     @Test
     public void assertNullLeague( ) {
         app.login("2","2");
         assertEquals("Enter valid details", app.assignGames(null, seasonID, true));
         app.logout();
+        afterAll();
     }
     @Test
     public void assertLeagueDoesntExist( ) {
         app.login("2","2");
         assertEquals("Enter valid details", app.assignGames("not exist", seasonID, true));
         app.logout();
+        afterAll();
     }
     @Test
     public void assertSeasonDoesntExist( ) {
         app.login("2","2");
         assertEquals("Enter valid details", app.assignGames(leagueID, "not exist", true));
         app.logout();
+        afterAll();
     }
 
     @Test
     public void assertPolicy1Even() {
         app.login("2","2");
         String res1 = app.assignGames(leagueID, "season1", true);
+        LinkedList<Game> res1List= gson.fromJson(res1,new TypeToken<LinkedList<Game>>(){}.getType());
         db.deleteAllRows("Game");
 
         //all teams-BARCELONA,HAPOEL,MACCABI REAL
@@ -71,8 +77,8 @@ public class AssignGame {
         Team barcelona = new Team("BARCELONA", "B",true,true);
         LinkedList<Game> expectedRes1 = new LinkedList<>();
         expectedRes1.add(new Game(barcelona.homeField, barcelona, maccabi));
-        String expected = gson.toJson(expectedRes1);
-        assertEquals(expected,res1);
+
+        assertEquals(expectedRes1.toString(),res1List.toString());
         afterAll();
         app.logout();
 

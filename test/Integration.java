@@ -2,6 +2,8 @@ import DataAccess.Dao;
 import Service.JavaApplication;
 import org.junit.Test;
 
+import java.util.LinkedList;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
@@ -148,7 +150,7 @@ public class Integration {
     public void Int20_login_as_AR_assign_policyFalse(){
         //login as AR successful so assignGames should work
         app.login("2", "2");
-        assertNotEquals("",app.assignGames(legueId,seasonID,false));
+        assertNotEquals((new LinkedList<>()).toString(),app.assignGames(legueId,seasonID,false).toString());
         db.deleteLeagueSeasonReferee(legueId,seasonID,refereeUsername);
         app.logout();
     }
