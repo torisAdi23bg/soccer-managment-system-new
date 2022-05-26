@@ -2,17 +2,22 @@ package Domain;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Logger {
+    /*
+    Logger class
+     */
     private final String logFile = "src/DataAccess/Log";
     private  FileWriter writer;
 
     private static Logger logger;
 
     private Logger() {
+        /*
+        Builder class
+         */
         try {
             writer = new FileWriter(logFile,true);
         } catch (IOException e) {}
@@ -20,6 +25,12 @@ public class Logger {
 
 
     public static Logger getInstance(){
+        /*
+        getInstance function
+        Logger is a singleton
+        output:
+            Logger
+         */
 
         if (logger==null){
             return  new Logger();
@@ -27,6 +38,9 @@ public class Logger {
         return logger;
     }
     public   void logLogin (String username, String password,String message) {
+        /*
+        Logger writes to log file after login by chosen format
+         */
         try {
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
             LocalDateTime now = LocalDateTime.now();
@@ -37,6 +51,9 @@ public class Logger {
         }
     }
     public  void logAssignGames(String leagueID, String seasonID, boolean policy,String message){
+        /*
+        Logger writes to log file after AssigningGames by chosen format
+         */
         try {
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
             LocalDateTime now = LocalDateTime.now();
@@ -48,6 +65,9 @@ public class Logger {
         }
     }
     public  void logAssignReferee(String leagueID,String seasonID, String refereeUsername,String message){
+        /*
+        Logger writes to log file after AssigningReferee by chosen format
+         */
         try {
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
             LocalDateTime now = LocalDateTime.now();
@@ -59,11 +79,14 @@ public class Logger {
         }
     }
 
-    public  void lofLogout(String username){
+    public  void logLogout(){
+        /*
+        Logger writes to log file after logout by chosen format
+         */
         try {
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
             LocalDateTime now = LocalDateTime.now();
-            writer.write("USER LOGGED OUT: USER: "+username+" TIME: "+dtf.format(now)+"\n");
+            writer.write("USER LOGGED OUT: USER:"+" TIME: "+dtf.format(now)+"\n");
             writer.close();
 
         } catch (IOException e) {
