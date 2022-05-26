@@ -21,5 +21,12 @@
       <jdbc-url>jdbc:sqlite:C:\Users\adito\IdeaProjects\soccer-managment-system-new\src\DataAccess\DB\LeagueManagmentDB.db</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="LeagueManagmentDB [4]" uuid="e3970947-b6f1-434f-bfb4-a4c3fe33be2f">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:C:\Users\adito\IdeaProjects\soccer-managment-system-new_with_documentation\src\DataAccess\DB\LeagueManagmentDB.db</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>
